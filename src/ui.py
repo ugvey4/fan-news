@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
-from fun import registr
+from fun import register
+from dbFan import create_data_base
 
 root = Tk()
 
@@ -43,6 +44,7 @@ def enty_log():
 
 
 def main():
+     create_data_base()
      window()
      label_start()
      button_click()
