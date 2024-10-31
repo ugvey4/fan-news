@@ -4,5 +4,6 @@ Fan news is a desktop application designed for football fans. With this app, you
 
 # How to use
 
-> pip install -r requirements.txt\n
+> pip install -r requirements.txt
+
 > python3 main.py
