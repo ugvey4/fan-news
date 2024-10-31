@@ -43,7 +43,7 @@ def enty_log():
     password_entry.place(x=300, y=280)
 
 
-def main():
+def main_ui():
      create_data_base()
      window()
      label_start()
