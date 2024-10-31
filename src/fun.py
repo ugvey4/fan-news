@@ -122,3 +122,6 @@ def menu_run(root):
     main_menu.add_cascade(label="Турниры")
     
     root.config(menu=main_menu)
+
+    import parsing
+    parsing.main()
