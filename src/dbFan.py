@@ -7,29 +7,20 @@ def create_data_base():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            password TEXT NOT NULL,
-            team TEXT,
-            league TEXT
+            username TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL
         )
     ''')
     
-    conn.commit()
-    conn.close()
-
-def add_columns():
-    conn = sql.connect('fan.db')
-    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS teams (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            team_name TEXT NOT NULL,
+            user_id INTEGER,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+    ''')
     
-    try:
-        cursor.execute("ALTER TABLE users ADD COLUMN team TEXT;")
-    except sql.OperationalError:
-        pass
-    try:
-        cursor.execute("ALTER TABLE users ADD COLUMN league TEXT;")
-    except sql.OperationalError:
-        pass
-
     conn.commit()
     conn.close()
 
@@ -45,7 +36,7 @@ def check_username(username):
     conn = sql.connect('fan.db')
     cursor = conn.cursor()
     
-    cursor.execute("SELECT 1 FROM users WHERE username = ?", (username,))
+    cursor.execute("SELECT 1 FROM users WHERE username = ?", (username))
     result = cursor.fetchone()
     
     conn.close()
@@ -55,7 +46,7 @@ def check_password(username):
     conn = sql.connect('fan.db')
     cursor = conn.cursor()
     
-    cursor.execute("SELECT password FROM users WHERE username = ?", (username,))
+    cursor.execute("SELECT password FROM users WHERE username = ?", (username))
     result = cursor.fetchone()
     conn.close()
     
@@ -63,21 +54,23 @@ def check_password(username):
         return None
     return result[0]
 
-def add_league(username, league):
+def add_team(user_id, team_name):
     conn = sql.connect('fan.db')
     cursor = conn.cursor()
     
-    cursor.execute('UPDATE users SET league = ? WHERE username = ?', (league, username))
+    cursor.execute('INSERT INTO teams (team_name, user_id) VALUES (?, ?)', (team_name, user_id))
     conn.commit()
     conn.close()
 
-def add_teams(username, team_name):
+def get_teams_by_user(user_id):
     conn = sql.connect('fan.db')
     cursor = conn.cursor()
     
-    cursor.execute('UPDATE users SET team = ? WHERE username = ?', (team_name, username))
-    conn.commit()
+    cursor.execute("SELECT team_name FROM teams WHERE user_id = ?", (user_id,))
+    results = cursor.fetchall()
     conn.close()
+    
+    return results
 
 if __name__ == '__main__':
     create_data_base()
