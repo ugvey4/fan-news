@@ -22,9 +22,22 @@ def label_start():
     under_label_text.place(x = 120, y = 140)
 
 def button_click():
-    button = Button(root, text="Log in", command=lambda: registr(root, login_entry, password_entry))
+    button = Button(root, text="Log in", font=('Arial', 12), background="#2f2f2f", foreground='white',
+                    command=lambda: validate_input(login_entry, password_entry))
     button.pack()
-    button.place(x = 360, y = 350)
+    button.place(x=380, y=350)
+
+def validate_input(login_entry, password_entry):
+    login = login_entry.get()
+    password = password_entry.get()
+    
+    if len(login) < 6 or len(password) < 6:
+        error_label = ttk.Label(text='Логин и пароль должны содержать не менее 6 символов.', 
+                                 font=('Arial', 12), background="#2f2f2f", foreground='red')
+        error_label.place(x=200, y=320)
+        return error_label
+    else:
+        registr(root, login_entry, password_entry)
 
 def enty_log():
     global login_entry, password_entry
